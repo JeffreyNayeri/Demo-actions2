@@ -1,6 +1,9 @@
 name: Deploy project 2
 
-on: push
+on: 
+  push:
+    branches:
+      - main
 
 jobs: 
     lint: 
@@ -42,7 +45,7 @@ jobs:
               run: npm test
 
 
-    deploy:
+    build:
         needs: test 
         runs-on: ubuntu-latest
 
@@ -61,5 +64,18 @@ jobs:
             - name: build project
               run: npm run build
 
+            - name: upload artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                name: dist-files
+                path: dist/
+              
+
+
+    deploy:
+        needs: build 
+        runs-on: ubuntu-latest
+
+        steps: 
             - name: Deploy
               run: echo "Deploying..."
